@@ -1,0 +1,401 @@
+{% extends 'question/layout.html' %}
+
+{% block content %}
+<input type="hidden" id="q_id" name="q_id" value="{{question.q_id}}"/>
+<div class="row" style="width:100%;display:flex; ">
+
+    <div class="col-sm-2">
+        <a href="/question/{{question.q_id}}" class="btn">Go back</a>
+    </div>
+
+    <div class = "col-sm-12" style="text-align:right">
+        
+        <div class="col-sm-6"></div>
+
+        <!-- Create copy of this question-->
+        <div class="col-sm-2">
+            <form action="{{formAction}}" method=POST>
+                {% csrf_token %}
+                <button 
+                    class="btn" 
+                    type="submit"
+                    style="width:100px" 
+                    name="submit"
+                    value="copyQuestion">Copy</button>
+            </form>
+
+        </div>
+        
+        <div class="col-sm-4">
+            <!-- <form action="{{formAction}}" method=POST >
+                {% csrf_token %}
+                <button 
+                    class="btn" 
+                    type="submit"
+                    style="width:200px" 
+                    name="submit"
+                    value="getLatex">Get latex</button>
+            </form> -->
+            <button id="getpdfbutton" value="PDF">PDF</button>
+        </div>
+    </div>
+</div>  
+
+<img id="questionimage" style="width:1000px;"/>
+
+
+
+
+
+<h4 class="card-content">
+    Question ID: {{question.q_id}}
+</h4>
+
+<!-- Question body-->
+<div style="width:100%">
+
+    <div class="panel panel-default">
+
+        <div id="q_body" class="panel-heading">
+            {{question.body}}
+        </div>
+    </div>
+</div>
+<button id="updatebodybutton" value="Update">Update</button>
+<!-- Update body block -->
+<div id="updatebodyblock" style="position:fixed; top:50px; left:50px; display:none; 
+border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+    <form id="updatebodyform" onSubmit="return false;">
+        <input type="hidden" name="q_id" value="{{question.q_id}}"/>        
+        <table border="0"> 
+        <tr>
+            <td>
+                <b>Body</b>
+            </td> 
+            <td>
+                <input type="text" name="body" placeholder="body" size="50">
+            </td>
+        </tr>
+        <tr><td colspan="2" align="right"> 
+        <button name="cancelbutton">Cancel</button>
+        <button name="actionbutton"></button>
+            </td></tr> 
+        </table>
+    </form>
+</div>
+
+<br>
+<br>
+<button id="addchoicebutton" value="Add">Add</button>
+<button id="updchoicebutton" value="Update" disabled/>Update</button>
+<button id="delchoicebutton" value="Delete" disabled/>Delete</button>
+
+<!-- Choices table -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Choices
+    </div>
+    <table border="1" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Body</th>
+            <th>Position</th>
+            <th>Is correct?</th>
+        </tr>
+        </thead>
+        <tbody id="choicestable">
+        </tbody>
+    </table>
+</div>
+
+<!-- Add choice -->
+<div id="addchoiceblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="addchoiceform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>        
+            <table border="0"> 
+            <tr>
+                <td><b>Body</b></td> 
+                <td><input type="text" placeholder="choice body" style="width: 200px;" name="body"/></td>
+            </tr>
+            <tr>
+                <td><b>Position</b></td> 
+                <td><input type="text" placeholder="start, end or none" style="width: 200px;" name="pos"/></td>
+            </tr>
+            <tr>
+                <td><b>Is correct</b></td> 
+                <td><input type="text" placeholder="true or false" style="width: 200px;" name="iscorrect"/></td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+</div>
+<!-- Update choice -->
+<div id="updatechoiceblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="updatechoiceform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>
+            <input type="hidden" id="selectedchoiceid" name="c_id"/>
+            <table border="0"> 
+            <tr>
+                <td><b>Body</b></td> 
+                <td><input type="text"  placeholder="choice body" style="width: 200px;" name="body"/></td>
+            </tr>
+            <tr>
+                <td><b>Position</b></td> 
+                <td><input type="text" placeholder="start, end or none" style="width: 200px;" name="pos"/></td>
+            </tr>
+            <tr>
+                <td><b>Is correct</b></td> 
+                <td><input type="text" placeholder="true or false" style="width: 200px;" name="iscorrect"/></td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+</div>
+
+<!-- Delete choice block -->
+<div id="delchoiceblock" style="position:fixed; top:50px; left:50px; display:none; 
+	border: solid 1px #e0a0a0; background:#fff0f0; padding: 20px; ">
+    Do you really want to delete the choice <span class="choice"></span><br/>
+    <button id="delchoicenoanswer">
+    No
+    </button>
+    <button id="delchoiceyesanswer">
+    Yes
+    </button>
+</div>
+
+<br>
+
+<button id="addtopicbutton" value="Add">Add</button>
+<button id="updtopicbutton" value="Update" disabled/>Update</button>
+<button id="deltopicbutton" value="Delete" disabled/>Delete</button>
+
+<!-- Topics table -->
+<div class="panel panel-default">
+        <div class="panel-heading">
+            Topics
+        </div>
+        <table border="1" cellspacing="0">
+            <thead>
+            <tr>
+                <th>Body</th>
+            </tr>
+            </thead>
+            <tbody id="topicstable">
+            </tbody>
+        </table>
+</div>
+
+<!-- Add topic -->
+<div id="addtopicblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="addtopicform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>        
+            <table border="0"> 
+            <tr>
+                <td>
+                    <b>Topic</b>
+                </td> 
+                <td>
+                    <input type="text" placeholder="topic body" style="width: 200px;" name="body"/>
+                </td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+</div>
+
+<!-- Update topic -->
+<div id="updatetopicblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="updatetopicform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>
+            <input type="hidden" id="selectedtopicid" name="t_id"/>
+            <table border="0"> 
+            <tr>
+                <td>
+                    <b>Topic</b>
+                </td> 
+                <td>
+                    <input type="text"  placeholder="topic body" style="width: 200px;" name="body"/>
+                </td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+</div>
+
+<!-- Delete topic block -->
+<div id="deltopicblock" style="position:fixed; top:50px; left:50px; display:none; 
+	border: solid 1px #e0a0a0; background:#fff0f0; padding: 20px; ">
+    Do you really want to delete the topic <span class="topic"></span><br/>
+    <button id="deltopicnoanswer">
+    No
+    </button>
+    <button id="deltopicyesanswer">
+    Yes
+    </button>
+</div>
+
+<br>
+
+<button id="addembedbutton" value="Add">Add</button>
+<button id="updembedbutton" value="Update" disabled/>Update</button>
+<button id="delembedbutton" value="Delete" disabled/>Delete</button>
+
+<!-- Embeds table-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Embeds
+    </div>
+    <table border="1" cellspacing="0">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Body</th>
+        </tr>
+        </thead>
+        <tbody id="embedstable">
+        </tbody>
+    </table>
+</div>
+<!-- Add embed -->
+<div id="addembedblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="addembedform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>        
+            <table border="0"> 
+            <tr>
+                <td>
+                    <b>Embed</b>
+                </td> 
+                <td>
+                    <input type="text" placeholder="embed body" style="width: 200px;" name="body"/>
+                </td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+</div>
+<!-- Update embed -->
+<div id="updateembedblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="updateembedform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>
+            <input type="hidden" id="selectedembedid" name="e_id"/>
+            <table border="0"> 
+            <tr>
+                <td>
+                    <b>Embed</b>
+                </td> 
+                <td>
+                    <input type="text"  placeholder="embed body" style="width: 200px;" name="body"/>
+                </td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+</div>
+<!-- Delete embed block -->
+<div id="delembedblock" style="position:fixed; top:50px; left:50px; display:none; 
+	border: solid 1px #e0a0a0; background:#fff0f0; padding: 20px; ">
+    Do you really want to delete the embed <span class="embed"></span><br/>
+    <button id="delembednoanswer">
+    No
+    </button>
+    <button id="delembedyesanswer">
+    Yes
+    </button>
+</div>
+
+<br>
+
+<!-- Ask Date-->
+<div class="row" style="width:100%;">
+
+    <div class="col-sm-4">
+        <h4 id="q_ask_date" class="card-content">
+            Ask Date: {{question.ask_date}}
+        </h4>
+    </div>
+    <button id="updatedatebutton" value="Update">Update</button>
+    <div id="updatedateblock" style="position:fixed; top:50px; left:50px; display:none; 
+    border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+        <form id="updatedateform" onSubmit="return false;">
+            <input type="hidden" name="q_id" value="{{question.q_id}}"/>        
+            <table border="0"> 
+            <tr>
+                <td>
+                    <b>Ask Date</b>
+                </td> 
+                <td>
+                    <input type="date" placeholder="YYYY-MM-DD" style="width: 200px" name="ask_date"/>
+                </td>
+            </tr>
+            <tr><td colspan="2" align="right"> 
+            <button name="cancelbutton">Cancel</button>
+            <button name="actionbutton"></button>
+                </td></tr> 
+            </table>
+        </form>
+    </div>
+</div>
+
+<br>
+
+<!-- Update Parent-->
+<div class="row" style="width:100%;">
+    <div class="col-sm-4">
+        <h4 id = "q_parent" class="card-content">
+            Parent: 
+            {% if question.parent != "" %}
+            {{question.parent}}
+            {%  else %}
+            None
+            {% endif %}
+        </h4>
+    </div>
+
+    <button id="updateparentbutton" value="Update">Update</button>
+    <div id="updateparentblock" style="position:fixed; top:50px; left:50px; display:none; 
+        border: solid 1px #a0a0e0; background:#f0f0ff; padding: 20px; ">
+            <form id="updateparentform" onSubmit="return false;">
+                <input type="hidden" name="q_id" value="{{question.q_id}}"/>        
+                <table border="0"> 
+                <tr>
+                    <td>
+                        <b>Parent</b>
+                    </td> 
+                    <td>
+                        <input type="text" placeholder="parent id" style="width: 200px;" name="parent"/>
+                    </td>
+                </tr>
+                <tr><td colspan="2" align="right"> 
+                <button name="cancelbutton">Cancel</button>
+                <button name="actionbutton"></button>
+                    </td></tr> 
+                </table>
+            </form>
+    </div>
+</div>
+{% endblock %}

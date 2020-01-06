@@ -1,0 +1,8 @@
+\question How many siblings do you have? \newline
+\begin{oneparchoices}
+ \choice None\newline
+ \choice One\newline
+ \choice Two\newline
+ \choice Three\newline
+ \choice Many\newline
+\end{oneparchoices}

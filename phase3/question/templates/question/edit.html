@@ -1,0 +1,329 @@
+{% extends 'question/layout.html' %}
+
+{% block content %}
+<div class="row" style="width:100%;display:flex; ">
+
+    <div class="col-sm-2">
+        <a href="/question/{{question.q_id}}" class="btn">Go back</a>
+    </div>
+
+    <div class = "col-sm-12" style="text-align:right">
+        
+        <div class="col-sm-6"></div>
+
+        <!-- Create copy of this question-->
+        <div class="col-sm-2">
+            <form action="{{formAction}}" method=POST>
+                {% csrf_token %}
+                <button 
+                    class="btn" 
+                    type="submit"
+                    style="width:100px" 
+                    name="submit"
+                    value="copyQuestion">Copy</button>
+            </form>
+
+        </div>
+        
+        <div class="col-sm-4">
+            <form action="{{formAction}}" method=POST >
+                {% csrf_token %}
+                <button 
+                    class="btn" 
+                    type="submit"
+                    style="width:200px" 
+                    name="submit"
+                    value="getLatex">Get latex</button>
+            </form>
+        </div>
+    </div>
+</div>  
+
+<h4 class="card-content">
+    Question ID: {{question.q_id}}
+</h4>
+
+<!-- Question body-->
+<div style="width:100%">
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            {{question.body}}
+        </div>
+    </div>
+
+    <div class = "row" style="text-align:right">
+        
+
+        <form action="{{formAction}}" method=POST >
+            {% csrf_token %}
+            
+            <div class="col-sm-10">
+                <input 
+                    type="text" 
+                    placeholder="body"
+                    name="body"/>
+                    
+            </div>
+            
+            <div class="col-sm-2">
+                <button 
+                    class="btn" 
+                    type="submit"
+                    name="submit"
+                    value="update_body">Update body</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br>
+
+<!-- Choices table-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Choices
+    </div>
+
+    <table class="table">
+        <thead>
+            <th class= "col-sm-4">Body</th>
+            <th class= "col-sm-1">Position</th>
+            <th class= "col-sm-1">Is correct?</th>
+            <th class= "col-sm-5">Edit</th>
+            <th class= "col-sm-1">Delete</th>
+        </thead>
+        <tbody>
+            {% for c in question.choices %}
+            <tr >
+                <td class= "col-sm-4">{{c.body}}</td>
+                <td class= "col-sm-2">{{c.pos}}</td>
+                <td class= "col-sm-2">{{c.iscorrect}}</td>
+                <td class= "col-sm-5">
+                    <form action="{{formAction}}" method=POST>
+                        {% csrf_token %}
+                        <div class="row">
+                            <input type = "hidden" name = "c_id" value = "{{c.c_id}}"/>
+                            <input type="text" placeholder="body" name="body"/>
+                            <input type="text" placeholder="position" name="position"/>
+                            <input type="text" placeholder="is correct" name="iscorrect"/>
+                            <div>
+                                <button class="btn" style="width:100%" type="submit" name="submit" value="updateChoice">
+                                    Update
+                                </button>
+                            </div>
+                            
+                        </div>
+                        
+                    </form>
+                </td>
+                <td class= "col-sm-1"> 
+                    <form action="{{formAction}}" method=POST>
+                        {% csrf_token %}
+                        <input type = "hidden" name = "c_id" value = "{{c.c_id}}"/>
+
+                        <button class="btn" type="submit" name="submit"value="delChoice">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<br>
+
+<!-- Add choice-->
+<div style="width: 100%; text-align:right">
+
+    <form action="{{formAction}}" method=POST>
+        {% csrf_token %}
+        <input type="text" placeholder="body" name="body"/>
+
+        <div class = "row" >
+            <div class="col-sm-4">
+                <input type="text" placeholder="position" name="position"/>
+            </div>
+            <div class="col-sm-4">
+                <input type="text" placeholder="correct" name="correct"/>
+            </div>
+            
+            <div class="col-sm-4">
+                <button class="btn" type="submit" name="submit"value="add_choice">
+                    Add choice
+                </button>
+            </div>
+           
+        </div>
+    </form>
+</div>
+
+<br>
+
+<!-- Topics table-->
+<div class="panel panel-default">
+        <div class="panel-heading">
+            Topics
+        </div>
+    
+        <table class="table">
+            <thead>
+                <th class= "col-sm-4">Body</th>
+                <th class= "col-sm-5">Edit</th>
+                <th class= "col-sm-1">Delete</th>
+            </thead>
+            <tbody>
+                {% for t in question.topics %}
+                <tr>
+                    <td class="col-sm-4">{{t.body}}</td>
+                        <td>
+                            <form action="{{formAction}}" method=POST >
+                                {% csrf_token %}
+                                <input type = "hidden" name = "t_id" value = "{{t.t_id}}"/>
+                                <input type="text" placeholder="body" style="width: 100px;"name="body"/>
+                                <button class="btn" type="submit" style="margin-left: 50px" name="submit" value="updateTopic">
+                                    Update
+                                </button>
+                            </form>
+                        </td>
+                        <td class= "col-sm-1">
+                            <form action="{{formAction}}" method=POST>
+                                {% csrf_token %}
+                                <input type = "hidden" name = "t_id" value = "{{t.t_id}}"/>
+                                <button class="btn" type="submit" style="width:100px" name="submit" value="delTopic">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+<br>
+
+<!-- Add topic-->
+<div style="width: 100%; text-align:right">
+    <form action="{{formAction}}" method=POST>
+        {% csrf_token %}
+        <input type="text" placeholder="topic"style="width: 200px;margin-right: 50px" name="topic"/>
+        <button class="btn" type="submit" name="submit"value="add_topic">
+            Add topic
+        </button>
+    </form>
+</div>
+
+<br>
+
+<!-- Embeds table-->
+<div class="panel panel-default">
+        <div class="panel-heading">
+            Embeds
+        </div>
+    
+        <table class="table">
+            <thead>
+                    <th class= "col-sm-4">Body</th>
+                    <th class= "col-sm-5">Edit</th>
+                    <th class= "col-sm-1">Delete</th>
+            </thead>
+            <tbody>
+                {% for e in question.embeds %}
+                <td>{{e.body}}</td>
+                <td>
+                    <form action="{{formAction}}" method=POST>
+                        {% csrf_token %}
+                        <input type = "hidden" name = "e_id" value = "{{e.e_id}}"/>
+                        <input type="text" placeholder="body" style="width: 100px;" name="body"/>
+                        <button class="btn" type="submit" style="margin-left: 50px" name="submit" value="updateEmbed">
+                            Update
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{formAction}}" method=POST>
+                        {% csrf_token %}
+                        <input type = "hidden" name = "e_id" value = "{{e.e_id}}"/>
+                        <button class="btn" type="submit" style="width:100px" name="submit" value="delEmbed">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+<br>
+
+<!-- Add embed-->
+<div style="width: 100%; text-align:right">
+    <form action="{{formAction}}" method=POST>
+        {% csrf_token %}
+        <input type="text" placeholder="embed" style="width: 200px; margin-right: 50px" name="embed"/>
+        <button class="btn" type="submit" name="submit" value="add_embed">
+            Add embed
+        </button>
+    </form> 
+</div>
+
+<br>
+
+<!-- Ask Date-->
+<div class="row" style="width:100%;">
+
+    <div class="col-sm-4">
+        <h4 class="card-content">
+            Ask Date: {{question.ask_date}}
+        </h4>
+    </div>
+    <div class="row" style="text-align: right">
+        <form action="{{formAction}}" method=POST>
+            {% csrf_token %}
+            <div class="col-sm-4" style="text-align: right">
+                <input type="date" placeholder="YYYY-MM-DD" style="width: 200px" name="ask_date"/>
+            </div>
+            <div style="text-align: right">
+                <button class="btn" type="submit" name="submit" value="updateAskDate">
+                    Update ask date
+                </button>
+            </div>
+        </form> 
+    </div>       
+</div>
+
+<br>
+
+<!-- Update Parent-->
+<div class="row" style="width:100%;">
+    <div class="col-sm-4">
+        <h4 class="card-content">
+            Parent: 
+            {% if question.parent != "" %}
+            {{question.parent}}
+            {%  else %}
+            None
+            {% endif %}
+        </h4>
+    </div>
+
+    <div class="row" style="text-align: right">
+        <form action="{{formAction}}" method=POST>
+            {% csrf_token %}
+            <div class="col-sm-4" style="text-align: right">
+                <input type="text" placeholder="parent id" style="width: 200px;" name="p_id"/>
+            </div>
+            <div style="text-align: right">
+                <button class="btn" type="submit" name="submit" value="updateParent">
+                    Update parent
+                </button>
+            </div>
+        </form>    
+    </div>            
+</div>
+{% endblock %}

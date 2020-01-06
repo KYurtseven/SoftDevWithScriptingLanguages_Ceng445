@@ -1,0 +1,109 @@
+{% extends 'exam/layout.html' %}
+
+{% block content %}
+
+<div class="card">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height: 7rem; font-size: 25px; text-align: center">{{exam.exam_name}}</div>
+            <div class="panel-body">
+                <div class="list-group">
+                    {% for q in questions %}
+                        <a href="/question/{{q.q_id}}" class="list-group-item">{{q.body}}</a>
+                    {% endfor %}
+                </div>
+                <a style="margin-bottom: 10px; height: 4rem" href="/exam/edit/{{exam.e_id}}" class="btn btn-primary btn-block btn-lg">Edit Exam</a>
+            </div>
+        </div>
+    </div>
+
+
+    <form class="form-inline" action="{{formAction}}" method=POST >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-2">
+                <input type="text" placeholder="Number of shuffles" name="shuffleNumber"/>
+            </div>
+    
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit" name="submit" value="createShuffled">
+                    Shuffle
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- <form class="form-inline" action="{{formAction}}" method=POST >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-2">
+                <input type="text" placeholder="No" name="examNumber"/>
+            </div>
+    
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit" name="submit" value="getLatexExam">
+                    Get Latex Exam
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    <form class="form-inline" action="{{formAction}}" method=POST >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-2">
+                <input type="text" placeholder="No" name="examNumber"/>
+            </div>
+    
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit" name="submit" value="getLatexKey">
+                    Get Latex Key
+                </button>
+            </div>
+        </div>
+    </form> -->
+
+    <form class="form-inline" action="{{formAction}}" method=POST >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-2">
+                <input type="text" placeholder="No" name="examNumber"/>
+            </div>
+    
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit" name="submit" value="getPDFExam">
+                    Get PDF Exam
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-inline" action="{{formAction}}" method=POST >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-2">
+                <input type="text" placeholder="No" name="examNumber"/>
+            </div>
+    
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit" name="submit" value="getPDFKey">
+                    Get PDF Key
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <form class="form-inline" action="{{formAction}}" method=POST >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-2">
+                <button class="btn btn-success" type="submit" name="submit" value="getCSVKey">
+                    Get CSV Key
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <a href="/exam" class="btn">Go back</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'question/layout.html' %}
+
+{% block content %}
+<div class="col-sm-2">
+    <a href="/qbank" class="btn">Questions</a>
+</div>
+
+<br>
+<br>
+<u1 class ="collection">
+        <div style= "margin-bottom: 100px">
+            <!-- render question body, choices-->
+
+            <div class="panel panel-default">
+                
+                <div class="panel-heading">
+                    {{question.body}}
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <th class= "col-sm-8">Body</th>
+                        <th>Position</th>
+                        <th>Is correct?</th>
+                    </thead>
+                    <tbody>
+                        {% for c in question.choices %}
+                        <tr >
+                            <td class= "col-sm-8">{{c.body}}</td>
+                            <td>{{c.pos}}</td>
+                            <td>{{c.iscorrect}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- Topics table-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Topics
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <th class= "col-sm-4">Body</th>
+                    </thead>
+                    <tbody>
+                        {% for t in question.topics %}
+                        <tr>
+                            <td class="col-sm-4">{{t.body}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Embeds table-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Embeds
+                </div>
+            
+                <table class="table">
+                    <thead>
+                            <th class= "col-sm-4">Body</th>
+                    </thead>
+                    <tbody>
+                        {% for e in question.embeds %}
+                        <td>{{e.body}}</td>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Ask Date-->
+            <div class="row" style="width:100%;">
+
+                    <div class="col-sm-4">
+                        <h4 class="card-content">
+                            Ask Date: {{question.ask_date}}
+                        </h4>
+                    </div>      
+            </div>
+    
+            <br>
+    
+            <!-- Update Parent-->
+            <div class="row" style="width:100%;">
+                <div class="col-sm-4">
+                    <h4 class="card-content">
+                        Parent: 
+                        {% if question.parent != "" %}
+                        {{question.parent}}
+                        {%  else %}
+                        None
+                        {% endif %}
+                    </h4>
+                </div>         
+            </div>
+
+            <div class="row" style="float:right;">
+                <!-- edit -->
+                <div class="col-sm-4">
+                    <form action="/question/edit/{{question.q_id}}">
+                        <button 
+                                class="btn" 
+                                style="width:100px">Edit</button>
+                    </form>
+                </div>
+            </div>  
+        </div>
+</u1>
+{% endblock %}

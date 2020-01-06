@@ -1,0 +1,32 @@
+{% extends 'exam/layout.html' %}
+
+{% block content %}
+<div class="panel panel-default">
+    <div class="panel-heading" style="height: 7rem; font-size: 30px; text-align: center">
+        EXAMS
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <table class="table">
+        {% for e in exams %}
+            <thead>
+                <th class= "col-sm-8">
+                    <a href="/exam/details/{{e.e_id}}">{{e.exam_name}}</a>
+                    <a href="edit/{{e.e_id}}" role="button" class="btn btn-warning pull-right">Edit</a>
+                </th>
+            </thead>
+        {% endfor %}
+    </table>
+</div>
+
+
+<div class= "col-sm-12">
+    <a style="margin-bottom: 10px; height: 4rem" href="/exam/create" class="btn btn-primary btn-block btn-lg">New Exam</a>
+</div>
+<!-- <div class="col-sm-2">
+        <a href="/qbank" class="btn">Questions</a>
+</div> -->
+
+
+{% endblock %}

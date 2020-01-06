@@ -1,0 +1,67 @@
+{% extends 'qbank/layout.html' %}
+
+{% block content %}
+
+<a style="width: 120px;" href="/exam" class="btn">Exams</a>
+
+ <!-- Add question-->
+
+<div style="float:right">
+    <form action="/question/add">
+        <button class="btn" style="width: 120px;">Add</button>
+    </form>
+</div>
+
+<br>
+
+<u1 class ="collection">
+
+    {% for q in questions %}
+        <div style= "margin-bottom: 100px">
+
+            <!-- render question body, choices-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{q.body}}
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <th class= "col-sm-8">Body</th>
+                        <th>Position</th>
+                        <th>Is correct?</th>
+                    </thead>
+                    <tbody>
+                        {% for c in q.choices %}
+                        <tr >
+                            <td class= "col-sm-8">{{c.body}}</td>
+                            <td>{{c.pos}}</td>
+                            <td>{{c.iscorrect}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="row" style="float:right;">
+                <!-- see more info -->
+                <div class="col-sm-6">
+                    <form action="/question/{{q.q_id}}">
+                        <button class="btn" style="width: 120px;">More Info</button>
+                    </form>
+                </div>
+                
+
+                <!-- edit -->
+                <div class="col-sm-4">
+                    <form action="/question/edit/{{q.q_id}}">
+                        <button 
+                                class="btn" 
+                                style="width:100px">Edit</button>
+                    </form>
+                </div>
+            </div>  
+        </div>
+    {% endfor %}
+</u1>
+{% endblock %}

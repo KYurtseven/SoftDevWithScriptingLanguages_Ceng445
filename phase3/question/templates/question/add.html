@@ -1,0 +1,57 @@
+{% extends 'question/layout.html' %}
+
+{% block content %}
+
+
+<!-- Question body-->
+<div style="width:100%">
+    <div style="text-align:right">
+        <form action="{{formAction}}" method=POST >
+            {% csrf_token %}
+            <div style="text-align: left">
+                    Body
+            </div>
+            
+            <input type="text" placeholder="body" name="body"/>
+            
+            <br>
+            <div style="text-align: left">
+                    Choice
+            </div>
+
+            <input type="text" placeholder="choice body" name="choice_body"/>
+            <input type="text" placeholder="chocie position" name="choice_position"/>
+            <input type="text" placeholder="choice correct" name="choice_correct"/>
+
+            <br>
+
+            <div style="text-align: left">
+                    Topic
+            </div>
+
+            <input type="text" placeholder="topic" name="topic"/>
+
+            <br>
+
+            <div style="text-align: left">
+                    Embed
+            </div>
+
+            <input type="text" placeholder="embed" name="embed"/>
+            
+            <br>
+            
+                
+
+            <div style="float:right">
+                <button 
+                    class="btn" 
+                    type="submit"
+                    name="submit"
+                    value="addQuestion">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
